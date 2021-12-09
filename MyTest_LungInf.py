@@ -21,10 +21,12 @@ def inference():
     parser = argparse.ArgumentParser()
     parser.add_argument('--testsize', type=int, default=352, help='testing size')
     parser.add_argument('--data_path', type=str, default='./Dataset/TestingSet/LungInfection-Test/',
-                        help='Path to test data')
-    parser.add_argument('--pth_path', type=str, default='./Snapshots/save_weights/Semi-Inf-Net/Semi-Inf-Net-100.pth',
+                        help='Path to test data')   # 测试数据路径
+    # 权重文件的路径。 如果是`semi-sup`，将其编辑为`Semi-Inf-Net/Semi-Inf-Net-100.pth
+    parser.add_argument('--pth_path', type=str, default='./Snapshots/save_weights/Inf-Net/Inf-Net-100.pth',
                         help='Path to weights file. If `semi-sup`, edit it to `Semi-Inf-Net/Semi-Inf-Net-100.pth`')
-    parser.add_argument('--save_path', type=str, default='./Results/Lung infection segmentation/Semi-Inf-Net/',
+    # 保存预测的路径。 如果是`semi-sup`，则将其编辑为`Semi-Inf-Net
+    parser.add_argument('--save_path', type=str, default='./Results/Lung infection segmentation/Inf-Net/',
                         help='Path to save the predictions. if `semi-sup`, edit it to `Semi-Inf-Net`')
     opt = parser.parse_args()
 
@@ -35,6 +37,7 @@ def inference():
                     "via E-mail (gepengai.ji@gamil.com)\n----\n".format(opt), "#" * 20)
 
     model = Network()
+    # model = torch.nn.DataParallel(model, device_ids=[0, 1]) # 如果您有多个 GPU，请取消注释。
     # model = torch.nn.DataParallel(model, device_ids=[0, 1]) # uncomment it if you have multiply GPUs.
     model.load_state_dict(torch.load(opt.pth_path, map_location={'cuda:1':'cuda:0'}))
     model.cuda()
